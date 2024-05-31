@@ -1,0 +1,56 @@
+import {useEffect, useState} from "react";
+
+function App() {
+  const [loading, setLoading] = useState(true);
+  const [unit, setUnit] = useState('USD');
+  const [coins, setCoins] = useState([]);
+  const [money, setMoney] = useState(0);
+  const [calc, setCalc] = useState(0);
+  
+  // [] empty only one 
+  useEffect(() => {
+    fetch("https://api.coinpaprika.com/v1/tickers")
+      .then((res) => res.json())
+      .then((json) => {
+        setCoins(json);
+        setLoading(false);
+      })
+  }, [])
+  const onInputChange = (money) => {
+    setMoney(money.target.value)
+  }
+  const onPriceChange = (price) => {
+    // console.log(price.target.value * money)
+    setCalc(price.target.value * money)
+    // setMoney(0);
+  }
+
+  const onUnitChange = (unit) => {
+    if(unit.target.value === 'KRW') setUnit('KRW')
+    else setUnit('USD');
+  };
+
+  return (
+    <div>
+      <h1> The Coins! - [ {coins.length} ]</h1>
+      Money : <input onChange={onInputChange} value={money}/> {unit === "KRW" ? "KRW" : "USD" }
+      <hr/>
+
+      {loading ? <strong>loading....</strong> : null}
+      Unit : <select onChange={onUnitChange}>
+          <option>USD</option>
+          <option>KRW</option>
+      </select> 
+      <br />
+      <br />
+      <select onChange={onPriceChange}>
+        {coins.map((item, index) => <option key={index} value={unit === "KRW" ? item.quotes.USD.price * 1300 : item.quotes.USD.price}> {item.name} ({item.symbol}): {unit === "KRW" ? item.quotes.USD.price * 1300 : item.quotes.USD.price}</option>)}
+      </select>
+      <br />
+      <br />
+      Gain Coin From Money : <span>{calc}</span>
+  </div>
+  )
+}
+
+export default App;

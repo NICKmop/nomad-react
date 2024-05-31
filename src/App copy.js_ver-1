@@ -1,0 +1,38 @@
+import {useState} from "react";
+import { TxtStyle } from './TxtStyle'
+
+function App() {
+  const [toDo, setToDo] = useState("");
+  const [toDos, setToDos] = useState([]);
+  
+  const onChange = (event) => setToDo(event.target.value);
+  const onSubmit = (event) => {
+    event.preventDefault();
+    if(toDo === ""){ console.log("empty : ");
+      return;
+    }
+    
+    // ... 배열에 append
+    setToDos(currentArray => [toDo, ...currentArray]);
+    setToDo("")
+  }
+  console.log(toDos);
+  return (
+    <div>
+      <h1>My To Do List : ({toDos.length})</h1>
+      <TxtStyle text={"div - cont - 1"}/>
+      <form onSubmit={onSubmit}>
+        <input onChange={onChange} type="text" placeholder="write your to" value={toDo}></input>
+        <button>Add to TO</button>
+      </form>
+      <hr />
+      <ul>
+        {toDos.map((item, index) => <li key={index}>{item}</li>)}
+      </ul>
+  </div>
+  )
+}
+
+// const reactMemo = React.memo()
+
+export default App;
